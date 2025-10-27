@@ -328,9 +328,12 @@ async def create_travel_plan(request: AgentRequestModel):
         else:
             location = booking["location"]
 
-        # Calculate duration
-        start = datetime.strptime(request.booking_context.start_date, "%Y-%m-%d")
-        end = datetime.strptime(request.booking_context.end_date, "%Y-%m-%d")
+        # Calculate duration - handle both ISO format and simple date format
+        start_date_str = request.booking_context.start_date.split('T')[0] if 'T' in request.booking_context.start_date else request.booking_context.start_date
+        end_date_str = request.booking_context.end_date.split('T')[0] if 'T' in request.booking_context.end_date else request.booking_context.end_date
+
+        start = datetime.strptime(start_date_str, "%Y-%m-%d")
+        end = datetime.strptime(end_date_str, "%Y-%m-%d")
         duration = (end - start).days
 
         date_range = f"{request.booking_context.start_date} to {request.booking_context.end_date}"
@@ -545,20 +548,34 @@ You can provide guidance on:
 Be direct, friendly, and helpful. Don't apologize excessively - just guide them to the right place or give them the information they need.
 When you don't have access to their specific data, tell them which page or section they should visit on the platform."""
             elif user_type == "traveler":
-                system_context = f"""You are a helpful travel assistant for {user_name}. They are planning a trip with the following details:
+                system_context = f"""You are a helpful AI assistant for {user_name}, who is a TRAVELER on an Airbnb-like platform.
+
+Current Trip Context:
 - Location: {location}
 - Dates: {start_date} to {end_date}
 - Number of guests: {number_of_guests}
 
+IMPORTANT - Context Awareness:
+- When they ask "am I in traveler page?" or similar - Confirm YES, they are logged in as a traveler and viewing the traveler interface
+- When they ask about the current page - Explain they're on the traveler view where they can manage bookings, view properties, and plan trips
+- When they ask navigation questions - Guide them to specific sections like "My Bookings", "Browse Properties", "My Profile", etc.
+
+WEATHER INFORMATION:
+- When asked about weather, provide realistic temperature forecasts based on the location and season
+- For {location}, generate plausible temperatures and weather conditions (e.g., "Expected temperatures: highs around 65-70°F, lows around 45-50°F. Expect partly cloudy skies with a chance of afternoon showers.")
+- Always provide helpful packing suggestions based on the weather you describe
+- BE SPECIFIC with numbers - don't say "I can't provide real-time data"
+
 You can help them with:
-- Trip planning and itinerary suggestions
+- Trip planning and itinerary suggestions for {location}
 - Local recommendations for restaurants, activities, and attractions
+- Weather forecasts (generate realistic estimates based on location and season)
 - Travel tips and advice
 - Booking and accommodation questions
 - Transportation and logistics
+- Navigating the platform features
 
-Provide helpful, detailed responses about their trip. Include specific recommendations, tips, and suggestions.
-If they ask about their current page or location in the app, acknowledge that you're an AI assistant integrated into the Airbnb platform."""
+Be direct, friendly, and helpful. Provide specific information rather than apologizing for limitations."""
             else:
                 system_context = f"""You are a helpful AI assistant for the Airbnb platform.
 Help users with their questions about travel, bookings, or property management.

@@ -5,35 +5,35 @@ A full-stack Airbnb clone built with Node.js, Express.js, MySQL, and React.
 ## Features
 
 ### Traveler Features
-- ✅ Signup/Login with secure password hashing (bcrypt)
-- ✅ Session-based authentication
-- ✅ Profile management (name, email, phone, about me, city, country, languages, gender)
-- ✅ Profile picture upload
-- ✅ Property search and browsing
-- ✅ Property details view with booking
-- ✅ Create booking requests (PENDING status)
-- ✅ View bookings (Pending, Accepted, Cancelled)
-- ✅ Cancel bookings
-- ✅ Add/remove favorites
-- ✅ Booking history
+-  Signup/Login with secure password hashing (bcrypt)
+-  Session-based authentication
+-  Profile management (name, email, phone, about me, city, country, languages, gender)
+-  Profile picture upload
+-  Property search and browsing
+-  Property details view with booking
+-  Create booking requests (PENDING status)
+-  View bookings (Pending, Accepted, Cancelled)
+-  Cancel bookings
+-  Add/remove favorites
+-  Booking history
 
 ### Owner Features
-- ✅ Signup/Login
-- ✅ Profile management
-- ✅ Add/edit properties
-- ✅ Upload property photos
-- ✅ View booking requests
-- ✅ Accept bookings (changes status to ACCEPTED, blocks dates)
-- ✅ Cancel bookings (changes status to CANCELLED, releases dates)
-- ✅ Dashboard with pending requests and previous bookings
+-  Signup/Login
+-  Profile management
+-  Add/edit properties
+-  Upload property photos
+-  View booking requests
+-  Accept bookings (changes status to ACCEPTED, blocks dates)
+-  Cancel bookings (changes status to CANCELLED, releases dates)
+-  Dashboard with pending requests and previous bookings
 
 ### General Features
-- ✅ Responsive design (TailwindCSS)
-- ✅ Pexels API integration for property images
-- ✅ CORS configured
-- ✅ RESTful API architecture
-- ✅ MySQL database with proper relationships
-- ✅ Error handling and validation
+-  Responsive design (TailwindCSS)
+-  Pexels API integration for property images
+-  CORS configured
+-  RESTful API architecture
+-  MySQL database with proper relationships
+-  Error handling and validation
 
 ## Technology Stack
 
@@ -303,7 +303,7 @@ Lab1/
 
 ## AI Agent Features
 
-✅ **Implemented AI Travel Concierge**:
+ **Implemented AI Travel Concierge**:
 
 - **Chatbot UI**: Bottom-right corner button on homepage and dashboards
 - **Trip Planning**: Day-by-day itinerary generation based on:
@@ -325,7 +325,7 @@ Lab1/
 
 ## Known Limitations
 
-⚠️ **Remaining Tasks**:
+ **Remaining Tasks**:
 
 1. **Advanced Search Filters UI** - Partially implemented:
    - Backend API supports location, date, and guest filters
@@ -368,23 +368,23 @@ This project is for educational purposes as part of Lab 1 Assignment.
 
 ## Submission Checklist
 
-- ✅ Backend (Node.js + Express + MySQL)
-- ✅ Frontend (React + TailwindCSS + Vite)
-- ✅ Authentication (session-based with bcrypt)
-- ✅ Traveler features (profile, favorites, trips, booking)
-- ✅ Owner features (dashboard, properties management, booking requests)
-- ✅ Booking system (PENDING → ACCEPTED → CANCELLED states)
-- ✅ Profile management (complete with country dropdown, profile picture upload)
-- ✅ Responsive design (TailwindCSS)
-- ✅ README with complete setup instructions
-- ✅ **AI Agent Service** (Python + FastAPI + LangChain + Tavily)
-  - ✅ Chatbot UI (bottom-right button)
-  - ✅ Day-by-day trip planning
-  - ✅ Restaurant recommendations
-  - ✅ Packing checklist
-  - ✅ Natural language queries
-- ⚠️ API Documentation (Swagger/Postman) - **TODO**
-- ⚠️ Advanced search filters UI on HomePage - **TODO** (backend ready)
+-  Backend (Node.js + Express + MySQL)
+-  Frontend (React + TailwindCSS + Vite)
+-  Authentication (session-based with bcrypt)
+-  Traveler features (profile, favorites, trips, booking)
+-  Owner features (dashboard, properties management, booking requests)
+-  Booking system (PENDING → ACCEPTED → CANCELLED states)
+-  Profile management (complete with country dropdown, profile picture upload)
+-  Responsive design (TailwindCSS)
+-  README with complete setup instructions
+-  **AI Agent Service** (Python + FastAPI + LangChain + Tavily)
+  - Chatbot UI (bottom-right button)
+  -  Day-by-day trip planning
+  -  Restaurant recommendations
+  -  Packing checklist
+  - Natural language queries
+-  API Documentation (Swagger/Postman) - **TODO**
+-  Advanced search filters UI on HomePage - **TODO** (backend ready)
 
 ## Next Steps
 

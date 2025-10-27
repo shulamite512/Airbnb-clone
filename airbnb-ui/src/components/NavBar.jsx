@@ -104,7 +104,7 @@ export default function NavBar() {
         <div className="flex-1 flex justify-center">
           <SearchPill onSearch={(q) => navigate(`/?${new URLSearchParams(q)}`)} />
         </div>
-        <nav className="hidden sm:flex items-center gap-4 text-sm">
+        <nav className="flex items-center gap-2 sm:gap-4 text-xs sm:text-sm">
           {isAuthenticated ? (
             <>
               <Link to="/services" className="hover:underline">Services</Link>
