@@ -14,7 +14,7 @@ const galleryRoutes = require('./routes/gallery');
 // Create Express app
 const app = express();
 
-// ====== CORS CONFIGURATION (MUST BE FIRST!) ======
+//  CORS CONFIGURATION
 // Allow requests from frontend (React)
 // Configure CORS to allow the Vite dev server (typically on 5173) and the React port (3000).
 // This also supports an environment variable FRONTEND_URL and an option to allow all origins for dev.
@@ -40,11 +40,11 @@ app.use(cors({
   credentials: true
 }));
 
-// ====== MIDDLEWARE ======
+// MIDDLEWARE 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// ====== SESSION CONFIGURATION ======
+//  SESSION CONFIGURATION 
 app.use(
   session({
     secret: 'supersecretkey', // change for production

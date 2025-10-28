@@ -1,4 +1,4 @@
-// Script to replace Unsplash URLs with Pexels URLs in the database
+
 const mysql = require('mysql2/promise');
 const { getPropertyImages } = require('./services/pexelsService');
 

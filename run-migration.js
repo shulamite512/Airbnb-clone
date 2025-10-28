@@ -1,5 +1,4 @@
-// run-migration.js
-// Automatically adds missing columns to the properties table
+
 
 const mysql = require('mysql2/promise');
 
@@ -107,11 +106,11 @@ async function runMigration() {
       }
     }
 
-    console.log('\n✅ Migration completed successfully!');
+    console.log('\n Migration completed successfully!');
     console.log('You can now create properties with all fields.');
 
   } catch (error) {
-    console.error('❌ Migration failed:', error.message);
+    console.error(' Migration failed:', error.message);
     process.exit(1);
   } finally {
     if (connection) {

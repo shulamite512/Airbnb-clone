@@ -1,9 +1,8 @@
--- Migration: Add missing columns to properties table
--- Run this in your MySQL/phpMyAdmin to update the existing properties table
+
 
 USE airbnb_clone;
 
--- Add missing columns to properties table
+
 ALTER TABLE properties
 ADD COLUMN IF NOT EXISTS street_address VARCHAR(255) AFTER location,
 ADD COLUMN IF NOT EXISTS city VARCHAR(100) AFTER street_address,
@@ -13,6 +12,4 @@ ADD COLUMN IF NOT EXISTS zip_code VARCHAR(20) AFTER state;
 ALTER TABLE properties
 ADD COLUMN IF NOT EXISTS check_in_time TIME DEFAULT '15:00:00' AFTER max_guests,
 ADD COLUMN IF NOT EXISTS check_out_time TIME DEFAULT '11:00:00' AFTER check_in_time;
-
--- Verify the columns were added
 DESCRIBE properties;

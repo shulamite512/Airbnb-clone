@@ -1,8 +1,3 @@
-// Simple Node script to test SSE end-to-end:
-// 1) Signup and login as owner, open SSE stream using the session cookie
-// 2) Signup and login as traveler, create a booking for an existing property
-// 3) Wait for SSE 'new_booking' event and print it
-// Run: node backend1/scripts/sse-test.js
 
 const http = require('http');
 

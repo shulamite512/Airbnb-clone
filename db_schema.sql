@@ -1,15 +1,12 @@
 
--- Airbnb Clone Database Schema
--- Matches routes: auth.js, traveler.js, owner.js, property.js, booking.js
+
 
 
 CREATE DATABASE IF NOT EXISTS airbnb_clone;
 USE airbnb_clone;
 
--- =========================================================
 -- USERS TABLE
--- Travelers and Owners share this table, differentiated by user_type
--- =========================================================
+
 CREATE TABLE IF NOT EXISTS users (
   id INT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(100) NOT NULL,
@@ -27,10 +24,9 @@ CREATE TABLE IF NOT EXISTS users (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- =========================================================
+
 -- PROPERTIES TABLE
--- Owned by users with user_type = 'owner'
--- =========================================================
+
 CREATE TABLE IF NOT EXISTS properties (
   id INT AUTO_INCREMENT PRIMARY KEY,
   owner_id INT NOT NULL,
@@ -57,10 +53,9 @@ CREATE TABLE IF NOT EXISTS properties (
   FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- =========================================================
+
 -- BOOKINGS TABLE
--- Traveler requests, owner accepts/rejects
--- =========================================================
+
 CREATE TABLE IF NOT EXISTS bookings (
   id INT AUTO_INCREMENT PRIMARY KEY,
   property_id INT NOT NULL,
@@ -77,10 +72,9 @@ CREATE TABLE IF NOT EXISTS bookings (
   FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- =========================================================
+
 -- BLOCKED DATES TABLE
--- Tracks unavailable property dates (linked to accepted bookings)
--- =========================================================
+
 CREATE TABLE IF NOT EXISTS blocked_dates (
   id INT AUTO_INCREMENT PRIMARY KEY,
   property_id INT NOT NULL,
@@ -91,10 +85,9 @@ CREATE TABLE IF NOT EXISTS blocked_dates (
   FOREIGN KEY (booking_id) REFERENCES bookings(id) ON DELETE CASCADE
 );
 
--- =========================================================
+
 -- FAVORITES TABLE
--- Traveler saved properties
--- =========================================================
+
 CREATE TABLE IF NOT EXISTS favorites (
   traveler_id INT NOT NULL,
   property_id INT NOT NULL,
@@ -103,18 +96,13 @@ CREATE TABLE IF NOT EXISTS favorites (
   FOREIGN KEY (property_id) REFERENCES properties(id) ON DELETE CASCADE
 );
 
--- =========================================================
--- INDEXES for Performance
--- =========================================================
+
 CREATE INDEX idx_properties_location ON properties(location);
 CREATE INDEX idx_bookings_status ON bookings(status);
 CREATE INDEX idx_bookings_owner_id ON bookings(owner_id);
 CREATE INDEX idx_bookings_traveler_id ON bookings(traveler_id);
 CREATE INDEX idx_blocked_dates_property_id ON blocked_dates(property_id);
 
--- =========================================================
--- Sample Data (optional - can delete)
--- =========================================================
 INSERT INTO users (name, email, password, user_type, location)
 VALUES ('Test Owner', 'owner@test.com', 'hashed_pw', 'owner', 'New York'),
        ('Test Traveler', 'traveler@test.com', 'hashed_pw', 'traveler', 'San Jose');
@@ -124,8 +112,7 @@ VALUES (1, 'Modern Loft NYC', 'Apartment', 'New York', 'A cozy modern apartment'
 
 -- =========================================================
 -- SERVICES REQUESTS TABLE
--- Stores quote requests submitted by users for services shown in the UI
--- =========================================================
+
 CREATE TABLE IF NOT EXISTS services_requests (
   id INT AUTO_INCREMENT PRIMARY KEY,
   service_id VARCHAR(100) NOT NULL,

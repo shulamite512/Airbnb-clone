@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install:*)",
+      "Bash(node test-pexels.js:*)",
+      "Bash(npm run dev:*)",
+      "Bash(cat:*)",
+      "Bash(node server.js:*)",
+      "Bash(node:*)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(taskkill /F /PID 7620)",
+      "Bash(taskkill //F //PID 7620)",
+      "Bash(pip install:*)",
+      "Bash(python ai_agent.py:*)",
+      "Bash(timeout:*)",
+      "Bash(curl:*)",
+      "Bash(pip uninstall:*)",
+      "Bash(ping:*)",
+      "Bash(dir:*)",
+      "Bash(taskkill //F //PID 31624)",
+      "Bash(tasklist:*)",
+      "Bash(taskkill //F //PID 31264)",
+      "Bash(taskkill //F //PID 23672)",
+      "Bash(mysql:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

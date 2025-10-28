@@ -1,5 +1,4 @@
-// test-pexels.js
-// Simple test script to verify Pexels API integration
+
 
 const { getPropertyImages } = require('./services/pexelsService');
 
