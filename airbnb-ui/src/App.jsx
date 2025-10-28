@@ -11,6 +11,7 @@ import TripDetailPage from "./pages/TripDetailPage.jsx";
 import OwnerDashboardPage from "./pages/OwnerDashboardPage.jsx";
 import TravelerProfilePage from "./pages/TravelerProfilePage.jsx";
 import OwnerPropertiesPage from "./pages/OwnerPropertiesPage.jsx";
+import OwnerProfilePage from "./pages/OwnerProfilePage.jsx";
 
 export default function App() {
   return (
@@ -29,6 +30,7 @@ export default function App() {
           <Route path="/profile" element={<TravelerProfilePage />} />
           <Route path="/owner/dashboard" element={<OwnerDashboardPage />} />
           <Route path="/owner/properties" element={<OwnerPropertiesPage />} />
+          <Route path="/owner/profile" element={<OwnerProfilePage />} />
         </Routes>
       </main>
     </div>

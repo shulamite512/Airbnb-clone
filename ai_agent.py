@@ -8,6 +8,10 @@ from datetime import datetime
 import warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
+# Load environment variables from .env file
+from dotenv import load_dotenv
+load_dotenv()
+
 # Try to import optional AI dependencies
 ChatOpenAI = None
 TavilySearchResults = None
@@ -224,6 +228,34 @@ def get_conversation_history(user_id: int, limit: int = 10):
         return list(reversed(results))
     except Exception as e:
         print(f"Error fetching conversation history: {e}")
+        return []
+
+def get_owner_properties(user_id: int):
+    """Fetch owner's properties from database"""
+    if not connection_pool or not user_id:
+        return []
+
+    try:
+        connection = connection_pool.get_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        query = """
+        SELECT id, property_name, property_type, location, city, state,
+               description, price_per_night, bedrooms, bathrooms, max_guests,
+               amenities, is_active
+        FROM properties
+        WHERE owner_id = %s
+        ORDER BY created_at DESC
+        """
+        cursor.execute(query, (user_id,))
+        results = cursor.fetchall()
+
+        cursor.close()
+        connection.close()
+
+        return results
+    except Exception as e:
+        print(f"Error fetching owner properties: {e}")
         return []
 
 def search_local_pois(location: str, interests: List[str]):
@@ -499,16 +531,8 @@ async def handle_custom_query(request: AgentRequestModel):
         end_date = request.booking_context.end_date
         number_of_guests = request.booking_context.number_of_guests
 
-        # Use Tavily to search for relevant information
-        if search_tool:
-            results = search_tool.invoke({"query": f"{request.custom_query} in {location}"})
-
-            return {
-                "response": f"Based on your query about {location}, here's what I found:",
-                "results": results,
-                "suggestions": "Let me know if you need more specific recommendations!"
-            }
-        elif llm:
+        # Use OpenAI with optional Tavily search
+        if llm:
             # Use OpenAI directly when Tavily is not available
             from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
 
@@ -528,25 +552,45 @@ async def handle_custom_query(request: AgentRequestModel):
 
             # Create context based on user type
             if user_type == "owner":
+                # Fetch owner's properties
+                owner_properties = get_owner_properties(request.user_id) if request.user_id else []
+
+                # Format properties for context
+                properties_info = ""
+                if owner_properties:
+                    properties_info = "\n\nYour Current Properties:\n"
+                    for prop in owner_properties:
+                        properties_info += f"""
+- {prop['property_name']} ({prop['property_type']})
+  Location: {prop['location']}{', ' + prop['city'] if prop.get('city') else ''}{', ' + prop['state'] if prop.get('state') else ''}
+  Description: {prop['description']}
+  Price: ${prop['price_per_night']}/night
+  Bedrooms: {prop['bedrooms']}, Bathrooms: {prop['bathrooms']}, Max Guests: {prop['max_guests']}
+  Amenities: {prop.get('amenities', 'N/A')}
+  Status: {'Active' if prop.get('is_active') else 'Inactive'}
+"""
+                else:
+                    properties_info = "\n\nYou currently have NO properties listed on the platform."
+
                 system_context = f"""You are an AI assistant integrated into an Airbnb-like platform.
 The user is {user_name}, a property OWNER (not a traveler).
+{properties_info}
 
-IMPORTANT Context Awareness:
-- When they ask "am I in the owner page?" - Confirm they are logged in as a property owner
-- When they ask about their properties/listings - Tell them to navigate to "My Listings" or "Manage Listings" page on the platform to see their properties
-- When they ask about booking requests - Tell them to check the "Booking Requests" or "Notifications" section
-- When they ask about specific data from the platform - Guide them to the appropriate page/section
+IMPORTANT - Answer Questions Directly:
+- When they ask about their properties, use the property data above to answer specifically
+- When they ask if they have a property matching a description, search through the properties listed above
+- When they ask about specific properties, refer to the actual property details provided
+- Be specific with property names, locations, prices, and details
 
 You can provide guidance on:
+- Information about their specific properties (using the data above)
 - How to create and manage property listings
 - Best practices for responding to booking requests
-- Pricing strategies and tips
+- Pricing strategies and tips based on their current listings
 - Guest communication advice
 - Property management tips
-- How to navigate the owner dashboard
 
-Be direct, friendly, and helpful. Don't apologize excessively - just guide them to the right place or give them the information they need.
-When you don't have access to their specific data, tell them which page or section they should visit on the platform."""
+Be direct, friendly, and helpful. Use the actual property data to give specific answers."""
             elif user_type == "traveler":
                 system_context = f"""You are a helpful AI assistant for {user_name}, who is a TRAVELER on an Airbnb-like platform.
 
@@ -581,7 +625,28 @@ Be direct, friendly, and helpful. Provide specific information rather than apolo
 Help users with their questions about travel, bookings, or property management.
 Provide helpful and friendly responses."""
 
-            messages = [SystemMessage(content=system_context + "\n\nRemember previous context from the conversation history.")]
+            # Try to get real-time information from Tavily if available
+            search_context = ""
+            if search_tool:
+                try:
+                    print(f"Searching Tavily for: {request.custom_query} in {location}")
+                    search_results = search_tool.invoke({"query": f"{request.custom_query} in {location}"})
+
+                    # Format search results for context
+                    if search_results:
+                        search_context = "\n\nREAL-TIME WEB SEARCH RESULTS:\n"
+                        for idx, result in enumerate(search_results[:5], 1):
+                            if isinstance(result, dict):
+                                title = result.get('title', result.get('name', 'Result'))
+                                content = result.get('content', result.get('snippet', result.get('description', '')))
+                                url = result.get('url', '')
+                                search_context += f"\n{idx}. {title}\n   {content}\n   Source: {url}\n"
+                        print(f"Added {len(search_results[:5])} Tavily search results to context")
+                except Exception as e:
+                    print(f"Tavily search error: {e}")
+                    search_context = ""
+
+            messages = [SystemMessage(content=system_context + search_context + "\n\nRemember previous context from the conversation history.")]
 
             # Add conversation history
             messages.extend(conversation_history)
@@ -592,6 +657,7 @@ Provide helpful and friendly responses."""
             # Debug: Print what we're sending to OpenAI
             print(f"System prompt being used: {system_context[:200]}...")
             print(f"Number of history messages: {len(conversation_history)}")
+            print(f"Search context added: {len(search_context)} characters")
 
             response = llm.invoke(messages)
 

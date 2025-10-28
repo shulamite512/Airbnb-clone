@@ -25,12 +25,13 @@ export default function AIChatbot({ booking: propBooking }) {
       if (!propBooking && isAuthenticated && user?.user_type === 'traveler') {
         try {
           const data = await bookingsApi.getAll();
-          // Get the first upcoming accepted booking
-          const upcomingBooking = data.bookings?.find(b =>
+          // Get the most recent upcoming booking (sort by created_at descending)
+          const upcomingBookings = data.bookings?.filter(b =>
             b.status === 'ACCEPTED' && new Date(b.start_date) >= new Date()
-          );
-          if (upcomingBooking) {
-            setBooking(upcomingBooking);
+          ).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+          if (upcomingBookings && upcomingBookings.length > 0) {
+            setBooking(upcomingBookings[0]); // Get the most recently created booking
           }
         } catch (error) {
           console.error('Failed to fetch booking:', error);

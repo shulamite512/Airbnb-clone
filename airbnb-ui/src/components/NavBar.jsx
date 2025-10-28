@@ -152,6 +152,15 @@ export default function NavBar() {
                         Profile
                       </Link>
                     )}
+                    {user?.user_type === 'owner' && (
+                      <Link
+                        to="/owner/profile"
+                        onClick={() => setShowMenu(false)}
+                        className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                      >
+                        Profile
+                      </Link>
+                    )}
                     <button
                       onClick={handleLogout}
                       className="w-full text-left px-4 py-2 hover:bg-gray-100"

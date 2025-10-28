@@ -114,6 +114,10 @@ export const ownerApi = {
         body: JSON.stringify(propertyData),
     }),
 
+    deleteProperty: (propertyId) => fetchApi(`/owner/properties/${propertyId}`, {
+        method: 'DELETE',
+    }),
+
     getDashboard: () => fetchApi('/owner/dashboard'),
 };
 

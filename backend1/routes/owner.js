@@ -338,6 +338,32 @@ router.put('/properties/:propertyId', authenticate, async (req, res) => {
   }
 });
 
+// Delete property
+router.delete('/properties/:propertyId', authenticate, async (req, res) => {
+  try {
+    const { propertyId } = req.params;
+    const db = req.app.locals.db;
+
+    // Verify ownership
+    const [properties] = await db.query(
+      'SELECT id FROM properties WHERE id = ? AND owner_id = ?',
+      [propertyId, req.session.userId]
+    );
+
+    if (properties.length === 0) {
+      return res.status(404).json({ error: 'Property not found or access denied' });
+    }
+
+    // Delete the property (CASCADE will handle related records)
+    await db.query('DELETE FROM properties WHERE id = ?', [propertyId]);
+
+    res.json({ message: 'Property deleted successfully' });
+  } catch (error) {
+    console.error('Delete property error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 // Get dashboard data (recent bookings and requests)
 router.get('/dashboard', authenticate, async (req, res) => {
   try {
